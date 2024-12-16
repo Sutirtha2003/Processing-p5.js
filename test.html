@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Theme Wheel</title>
+    <style>
+        /* CSS styling for the theme wheel */
+        .theme-wheel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .theme {
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-wheel">
+        <div class="theme" onclick="selectTheme('Theme 1')">Theme 1</div>
+        <div class="theme" onclick="selectTheme('Theme 2')">Theme 2</div>
+        <div class="theme" onclick="selectTheme('Theme 3')">Theme 3</div>
+        <!-- Add more theme elements as needed -->
+    </div>
+
+    <script>
+        function selectTheme(theme) {
+            console.log("Selected theme: " + theme);
+            // Add your own code here to handle the selected theme
+        }
+    </script>
+</body>
+</html>

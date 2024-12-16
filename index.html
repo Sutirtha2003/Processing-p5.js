@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <title>Interactive Theme Wheel</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let chapterCount;
+let divisions = [];
+let sectors = [];
+
+function setup() {
+  createCanvas(400, 400);
+  angleMode(DEGREES);
+  
+  // Prompt user for the number of chapters
+  chapterCount = parseInt(prompt("Enter the number of chapters:"));
+  
+  // Calculate the angle for each division
+  let angleStep = 360 / chapterCount;
+  for (let i = 0; i < chapterCount; i++) {
+    divisions.push(i * angleStep);
+    sectors.push({ division: i, rings: [] });
+  }
+}
+
+function draw() {
+  background(220);
+
+  drawThemeWheel();
+  drawRings();
+}
+
+function drawThemeWheel() {
+  let cx = width / 2;
+  let cy = height / 2;
+  let radius = min(width, height) / 2 - 20;
+
+  // Draw division lines
+  strokeWeight(2);
+  stroke(0);
+  for (let angle of divisions) {
+    line(cx, cy, cx + cos(angle) * radius, cy + sin(angle) * radius);
+  }
+
+  // Draw sector labels
+  textAlign(CENTER, CENTER);
+  textSize(16);
+  noStroke();
+  fill(0);
+  for (let i = 0; i < divisions.length; i++) {
+    let angle = divisions[i];
+    let label = i + 1;
+    let x = cx + cos(angle / 2) * radius * 0.7;
+    let y = cy + sin(angle / 2) * radius * 0.7;
+    text(label, x, y);
+  }
+}
+
+function drawRings() {
+  for (let sector of sectors) {
+    let { division, rings } = sector;
+    let squareCount = rings.length;
+
+    let cx = width / 2;
+    let cy = height / 2;
+    let angle = divisions[division];
+    let nextAngle = divisions[(division + 1) % chapterCount];
+    let radius1 = (width / 4) + (division * 20);
+    let radius2 = (width / 4) + ((division + 1) * 20);
+
+    for (let i = 0; i < squareCount; i++) {
+      let size = width / (squareCount + 2);
+      let x = cx + cos(angle) * radius1 - size / 2;
+      let y = cy + sin(angle) * radius1 - size / 2;
+      let color = rings[i];
+
+      fill(color);
+      rect(x, y, size, size);
+
+      angle += (nextAngle - angle) / squareCount;
+      radius1 = radius2;
+      radius2 += 20;
+    }
+  }
+}
+
+function mouseClicked() {
+  let cx = width / 2;
+  let cy = height / 2;
+  let mx = mouseX - cx;
+  let my = mouseY - cy;
+  let mouseAngle = atan2(my, mx);
+  let radius = sqrt(mx * mx + my * my);
+
+  for (let i = 0; i < divisions.length; i++) {
+    let angle = divisions[i];
+    let nextAngle = divisions[(i + 1) % chapterCount];
+
+    if (mouseAngle >= angle && mouseAngle <= nextAngle && radius < width / 2 && radius > width / 4) {
+      let ringCount = parseInt(prompt("Enter the number of rings for this sector:"));
+
+      if (!isNaN(ringCount) && ringCount > 0) {
+        let sector = sectors[i];
+        let { rings } = sector;
+
+        for (let j = 0; j < ringCount; j++) {
+          let color = getRandomColor();
+          rings.push(color);
+        }
+      }
+
+      break;
+    }
+  }
+}
+
+function getRandomColor() {
+  return color(random(255), random(255), random(255));
+}
+
+  </script>
+</body>
+</html>
